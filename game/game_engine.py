@@ -79,3 +79,29 @@ class GameEngine:
         ai_text = self.font.render(str(self.ai_score), True, WHITE)
         screen.blit(player_text, (self.width//4, 20))
         screen.blit(ai_text, (self.width * 3//4, 20))
+        
+        
+    def check_game_over(self, screen):
+        if self.player_score >= 5:
+            winner_text = "Player Wins!"
+        elif self.ai_score >= 5:
+            winner_text = "AI Wins!"
+        else:
+            return False  # No one reached 5 yet
+
+        # Display winner text
+        font_large = pygame.font.SysFont("Arial", 60, bold=True)
+        text_surface = font_large.render(winner_text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.width // 2, self.height // 2))
+        screen.blit(text_surface, text_rect)
+        pygame.display.flip()
+
+        # Wait for a few seconds so players can see it
+        pygame.time.delay(3000)
+
+        # End the game after showing the message
+        pygame.quit()
+        exit()
+
+        return True
+
