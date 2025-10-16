@@ -7,6 +7,14 @@ from .ball import Ball
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+# ✅ Initialize pygame mixer
+pygame.mixer.init()
+
+# ✅ Load sound effects
+sound_paddle = pygame.mixer.Sound("sounds/paddle_hit.wav")
+sound_wall   = pygame.mixer.Sound("sounds/wall_bounce.wav")
+sound_score  = pygame.mixer.Sound("sounds/score.wav")
+
 class GameEngine:
     def __init__(self, width, height):
         self.width = width
@@ -43,27 +51,35 @@ class GameEngine:
         if ball_rect.colliderect(player_rect) and self.ball.velocity_x < 0:
             self.ball.velocity_x = abs(self.ball.velocity_x)  # Move right
             self.ball.x = player_rect.x + player_rect.width  # Place outside paddle
-
+            sound_paddle.play()
+            
         # --- AI paddle collision ---
         ai_rect = self.ai.rect()
         if ball_rect.colliderect(ai_rect) and self.ball.velocity_x > 0:
             self.ball.velocity_x = -abs(self.ball.velocity_x)  # Move left
             self.ball.x = ai_rect.x - self.ball.width  # Place outside paddle
-
+            sound_paddle.play()
+            
+            
         # --- Top/Bottom wall collisions (bounce) ---
         if self.ball.y <= 0:
             self.ball.y = 0
             self.ball.velocity_y = abs(self.ball.velocity_y)  # Bounce down
+            sound_wall.play()
+            
         elif self.ball.y + self.ball.height >= self.height:
             self.ball.y = self.height - self.ball.height
             self.ball.velocity_y = -abs(self.ball.velocity_y)  # Bounce up
-
+            sound_wall.play()
+            
         # --- Left/Right walls (score & reset) ---
         if self.ball.x <= 0:
             self.ai_score += 1
+            sound_score.play()
             self.ball.reset()
         elif self.ball.x + self.ball.width >= self.width:
             self.player_score += 1
+            sound_score.play()
             self.ball.reset()
 
         # --- Update AI paddle ---

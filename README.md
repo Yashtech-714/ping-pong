@@ -86,7 +86,6 @@ I need a game over screen when a player reaches 5 points. Create a method that c
 ```
 Add a replay feature after game over. Show options for "Best of 3", "Best of 5", "Best of 7", or "Exit". Wait for user input (keys 3, 5, 7, or ESC). When they choose, update the winning score target and reset the ball position. That should let them play again.
 ```
-
 ### Task 4: Add Sound Feedback
 
 > Add basic sound effects for paddle hit, wall bounce, and score.
