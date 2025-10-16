@@ -28,18 +28,44 @@ class GameEngine:
         if keys[pygame.K_s]:
             self.player.move(10, self.height)
 
-    def update(self):
-        self.ball.move()
-        self.ball.check_collision(self.player, self.ai)
 
+
+    def update(self):
+        # Move the ball
+        self.ball.move()
+        ball_rect = self.ball.rect()
+
+        # --- Player paddle collision ---
+        player_rect = self.player.rect()
+        if ball_rect.colliderect(player_rect) and self.ball.velocity_x < 0:
+            self.ball.velocity_x = abs(self.ball.velocity_x)  # Move right
+            self.ball.x = player_rect.x + player_rect.width  # Place outside paddle
+
+        # --- AI paddle collision ---
+        ai_rect = self.ai.rect()
+        if ball_rect.colliderect(ai_rect) and self.ball.velocity_x > 0:
+            self.ball.velocity_x = -abs(self.ball.velocity_x)  # Move left
+            self.ball.x = ai_rect.x - self.ball.width  # Place outside paddle
+
+        # --- Top/Bottom wall collisions (bounce) ---
+        if self.ball.y <= 0:
+            self.ball.y = 0
+            self.ball.velocity_y = abs(self.ball.velocity_y)  # Bounce down
+        elif self.ball.y + self.ball.height >= self.height:
+            self.ball.y = self.height - self.ball.height
+            self.ball.velocity_y = -abs(self.ball.velocity_y)  # Bounce up
+
+        # --- Left/Right walls (score & reset) ---
         if self.ball.x <= 0:
             self.ai_score += 1
             self.ball.reset()
-        elif self.ball.x >= self.width:
+        elif self.ball.x + self.ball.width >= self.width:
             self.player_score += 1
             self.ball.reset()
 
+        # --- Update AI paddle ---
         self.ai.auto_track(self.ball, self.height)
+
 
     def render(self, screen):
         # Draw paddles and ball
