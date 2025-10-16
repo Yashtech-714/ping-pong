@@ -36,6 +36,8 @@ def main():
         # --- Check for Game Over condition ---
         engine.check_game_over(SCREEN)
         # -------------------------------------
+        
+        
         pygame.display.flip()
         clock.tick(FPS)
 
